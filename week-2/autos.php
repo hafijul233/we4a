@@ -109,11 +109,11 @@ $autos = ($statement->rowCount() > 0)
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Mohammad Hafijul Islam - Autos Database</title>
-  <link rel="shortcut icon" href="assets/img/icons.jpg" type="image/jpg">
+  <link rel="shortcut icon" href="../assets/img/icons.jpg" type="image/jpg">
   <!-- Bootstrap core CSS -->
-  <link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+  <link href="../assets/css/bootstrap.css" rel="stylesheet" type="text/css">
   <!-- Custom styles for this template -->
-  <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+  <link href="../assets/css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body class="d-flex flex-column h-100">
 <!-- Begin page content -->
@@ -211,7 +211,7 @@ $autos = ($statement->rowCount() > 0)
     <span class="text-muted">&copy; <?= date('Y') ?> . Mohammad Hafijul Islam</span>
   </div>
 </footer>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/bootstrap.bundle.js"></script>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/bootstrap.bundle.js"></script>
 </body>
 </html>

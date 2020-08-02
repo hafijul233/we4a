@@ -51,11 +51,11 @@ if (isset($_POST['login']) && $_POST['login'] == 'submit') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Mohammad Hafijul Islam - Autos Database</title>
-  <link rel="shortcut icon" href="assets/img/icons.jpg" type="image/jpg">
+  <link rel="shortcut icon" href="../assets/img/icons.jpg" type="image/jpg">
   <!-- Bootstrap core CSS -->
-  <link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+  <link href="../assets/css/bootstrap.css" rel="stylesheet" type="text/css">
   <!-- Custom styles for this template -->
-  <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+  <link href="../assets/css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body class="d-flex flex-column h-100">
 <!-- Begin page content -->
@@ -64,7 +64,7 @@ if (isset($_POST['login']) && $_POST['login'] == 'submit') {
     <form class="form-signin" action="login.php" method="post" accept-charset="UTF-8" autocomplete="off"
           spellcheck="true">
       <div class="text-center mb-4">
-        <img class="mb-4" src="assets/img/icons.jpg" alt="Logo" width="72" height="72">
+        <img class="mb-4" src="../assets/img/icons.jpg" alt="Logo" width="72" height="72">
         <h1 class="h3 mb-3 font-weight-normal">Please Log In</h1>
         <p class="lead">
           For a password hint, view source and find a password hint
@@ -124,8 +124,8 @@ if (isset($_POST['login']) && $_POST['login'] == 'submit') {
     <span class="text-muted">&copy; <?= date('Y') ?>. Mohammad Hafijul Islam</span>
   </div>
 </footer>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/bootstrap.bundle.js"></script>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/bootstrap.bundle.js"></script>
 
 <script>
     $('form').submit(function (e) {
