@@ -45,7 +45,7 @@ $autos = ($statement->rowCount() > 0)
                 <ul class="list-group mx-3">
                     <?php foreach ($autos as $auto) : ?>
                       <li>
-                          <?= htmlentities($auto['year'] . " " . $auto['make'] . " / " . $auto['mileage']) ?>
+                          <?= htmlentities($auto['year'] . " " . $auto['make'] . " / " . $auto['mileage'], ENT_COMPAT, ini_get("default_charset"), false) ?>
                           <?php if (!empty($auto['photo'])) : ?>
                             <a href="image.php?ref= <?= urlencode($auto['photo']) ?>" target="_blank"
                                class="float-right">

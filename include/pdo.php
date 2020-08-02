@@ -15,10 +15,10 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if ($pdo) {
-        error_log("Database Connected Successfully.");
+       // error_log("Database Connected Successfully.");
     }
 } catch (PDOException $error) {
-    error_log($error->getMessage() . ".");
+    //error_log($error->getMessage() . ".");
     die("Connection Error: " . $error->getMessage());
 }
 

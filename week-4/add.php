@@ -21,8 +21,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     //Year value Validation
     if ($year == '' || $year == NULL) {
         array_push($error, "Year field is required.");
-    }
-    else if (preg_match("/^[\d]+$/i", $year) == 0) {
+    } else if (preg_match("/^[\d]+$/i", $year) == 0) {
         //input is always string [ is_int()/ is_integer() ] not work
         //and database type int so [ is_numeric()/ intval() ] data may get truncated
         //so made a custom validation rule
@@ -32,8 +31,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     //Mileage Value validation
     if ($mileage == '' || $mileage == NULL) {
         array_push($error, "Mileage field is required.");
-    }
-    elseif (preg_match("/^[\d]+$/i", $mileage) == 0) {
+    } elseif (preg_match("/^[\d]+$/i", $mileage) == 0) {
         //input is always string [ is_int()/ is_integer() ] not work
         //and database type int so [ is_numeric()/ intval() ] data may get truncated
         //so made a custom validation rule
@@ -49,9 +47,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
             //generic syntax rule
             array_push($error, "URL has Invalid Characters");
         }
-    }
-
-    else $url = null;
+    } else $url = null;
 
     //no error found && validation passed
     if (count($error) == 0) {
@@ -72,8 +68,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
         if (!$result) {
             error_log("Record Insert Failed");
             $confirm = ['type' => 'text-danger', 'msg' => "Record Insert Failed"];
-        }
-        //insert succeed
+        } //insert succeed
         else {
             error_log("Record Insert");
             $confirm = ['type' => 'text-success', 'msg' => "Record Insert Successfully"];

@@ -36,9 +36,6 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
             //errors collection
             $_SESSION['errors'] = $error;
 
-            //redirect to this page as get req
-            header("Location: login.php");
-            return;
         } //login succeed
         else {
             $_SESSION['user'] = $red[0];
@@ -50,7 +47,15 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
         }
     }
 
+    //errors collection
+    $_SESSION['errors'] = $error;
+
+    //redirect to this page as get req
+    header("Location: login.php");
+    return;
 }
+
+
 //login cancelled
 elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
     //redirect to index.php
@@ -88,6 +93,7 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
           followed by 123. -->
         </p>
       </div>
+      <?php //print_r($_SESSION) ?>
       <?= display_error() ?>
       <div class="form-label-group">
         <input type="text" id="inputEmail" class="form-control"
