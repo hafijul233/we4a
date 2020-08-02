@@ -56,7 +56,7 @@ $autos = ($statement->rowCount() > 0)
                     <tbody>
                     <?php foreach ($autos as $auto) : ?>
                       <tr>
-                          <td><?= htmlentities($auto['auto_id']) ?></td>
+                        <td><?= htmlentities($auto['auto_id']) ?></td>
                         <td><?= htmlentities($auto['year']) ?></td>
                         <td><?= htmlentities($auto['make'], ENT_COMPAT, ini_get("default_charset"), false) ?></td>
                         <td><?= htmlentities($auto['mileage']) ?></td>
@@ -76,17 +76,15 @@ $autos = ($statement->rowCount() > 0)
                     </tfoot>
                   </table>
                 </div>
-
-                <ul class="list-group mx-3">
-
-                </ul>
               </div>
             </div>
           </div>
         </div>
+      <?php else : ?>
+      <p class="text-center font-weight-bold text-dark">No rows found</p>
       <?php endif; ?>
     <p class="mt-3">
-      <a href="add.php">Add New</a> |
+      <a href="add.php">Add New Entry</a> |
       <a href="logout.php">Logout</a>
     </p>
   </div>

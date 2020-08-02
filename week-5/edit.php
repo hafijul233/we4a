@@ -8,54 +8,70 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     $error = $confirm = [];
     //Email Validation
     $make = filter_var(htmlentities($_POST['make']), FILTER_SANITIZE_STRING);
-    $model = filter_var(htmlentities($_POST['model']), FILTER_SANITIZE_STRING);
     $year = filter_var(htmlentities($_POST['year']), FILTER_SANITIZE_STRING);
     $mileage = filter_var(htmlentities($_POST['mileage']), FILTER_SANITIZE_STRING);
     $url = filter_var(htmlentities($_POST['url']), FILTER_SANITIZE_URL);
     $user_id = $_SESSION['user']['user_id'];
 
     //Make Value validation
-    if ($make == '' || $make == NULL
-        || $model == '' || $model == NULL
-        || $year == '' || $year == NULL
-        || $mileage == '' || $mileage == NULL
-    ) {
-        array_push($error, "All fields are required");
+    if ($make == '' || $make == NULL) {
+        array_push($error, "Make is required");
+    }
+
+    //Year value Validation
+    if ($year == '' || $year == NULL) {
+        array_push($error, "Year field is required.");
     } else if (preg_match("/^[\d]+$/i", $year) == 0) {
         //input is always string [ is_int()/ is_integer() ] not work
         //and database type int so [ is_numeric()/ intval() ] data may get truncated
         //so made a custom validation rule
-        array_push($error, "Year must be an integer");
+        array_push($error, "Mileage and year must be numeric");
+    }
+
+    //Mileage Value validation
+    if ($mileage == '' || $mileage == NULL) {
+        array_push($error, "Mileage field is required.");
     } elseif (preg_match("/^[\d]+$/i", $mileage) == 0) {
         //input is always string [ is_int()/ is_integer() ] not work
         //and database type int so [ is_numeric()/ intval() ] data may get truncated
         //so made a custom validation rule
-        array_push($error, "Mileage must be an integer");
+        array_push($error, "Mileage and year must be numeric");
     }
+
+    //URL Validation
+    if (strlen($url) > 0) {
+        if (strlen($url) > 900 || strlen($url) < 1) {
+            array_push($error, "Very Large URL. Try Shorting Url");
+        } else if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            //filter valid url based on RFC 2396 [http://www.faqs.org/rfcs/rfc2396.html]
+            //generic syntax rule
+            array_push($error, "URL has Invalid Characters");
+        }
+    } else $url = null;
 
     //no error found && validation passed
     if (count($error) == 0) {
 
-        $sql = "INSERT INTO `autos`(`make`, `model`,`year`, `mileage`, `added_by`, `photo`) " .
-            "VALUES (:make, :model, :year, :mileage, :user, :photo)";
+        $sql = "INSERT INTO `autos`(`make`, `year`, `mileage`, `added_by`, `photo`) " .
+            "VALUES (:make, :year, :mileage, :user, :photo)";
         $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
         $result = $statement->execute(array(
             ':make' => $make,
-            ':model' => $model,
             ':year' => $year,
             ':mileage' => $mileage,
             ':user' => $user_id,
+            ':photo' => $url
         ));
 
         //insert failed
         if (!$result) {
-            error_log("Record added Failed");
-            $confirm = ['type' => 'text-danger', 'msg' => "Record added Failed"];
+            error_log("Record Insert Failed");
+            $confirm = ['type' => 'text-danger', 'msg' => "Record Insert Failed"];
         } //insert succeed
         else {
-            error_log("Record added");
-            $confirm = ['type' => 'text-success', 'msg' => "Record added"];
+            error_log("Record Insert");
+            $confirm = ['type' => 'text-success', 'msg' => "Record Insert Successfully"];
         }
 
         //getting confirm message
@@ -109,16 +125,6 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
                 </div>
               </div>
               <div class="form-group row">
-                <label for="model" class="col-form-label col-md-3">
-                  Model
-                  <span class="font-weight-bold text-danger">*</span>
-                </label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" name="model" id="model"
-                         size="255" minlength="1" maxlength="255">
-                </div>
-              </div>
-              <div class="form-group row">
                 <label for="year" class="col-form-label col-md-3">
                   Year
                   <span class="font-weight-bold text-danger">*</span>
@@ -136,6 +142,15 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
                 <div class="col-md-9">
                   <input type="text" id="mileage" class="form-control" name="mileage"
                          size="11" minlength="1" maxlength="11">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="url" class="col-form-label col-md-3">
+                  Photo(URL)
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="url" id="url"
+                         size="255" minlength="1" maxlength="255">
                 </div>
               </div>
             </div>
