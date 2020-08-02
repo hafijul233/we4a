@@ -4,9 +4,9 @@ session_start();
 
 //Database Connection Object
 $server = "localhost";
-$user = "hafijulislamadov_test";
-$db = "hafijulislamadov_misc";
-$pass = "Hafijul14_M";
+$user = "hafijulislamadov_test";//"root"; //
+$db = "hafijulislamadov_misc";//"misc"; //
+$pass = "Hafijul14_M";//""; //
 $port = 3306;
 
 try {
@@ -15,19 +15,22 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if ($pdo) {
-        error_log("Database Connected Successfully.");
+        //error_log("Database Connected Successfully.");
     }
 } catch (PDOException $error) {
-    error_log($error->getMessage() . ".");
+    //error_log($error->getMessage() . ".");
     die("Connection Error: " . $error->getMessage());
 }
 
-function session_data()
+
+function display_error($error)
 {
-    if (!empty($_SESSION['msg']) && !empty($_SESSION['typ'])) {
-        echo "<p class=\"text-" . $_SESSION['typ']
-            . "font-weight-bold d-block\">" . $_SESSION['msg'] . "</p>";
-        unset($_SESSION['msg']);
-        unset($_SESSION['typ']);
-    }
+    if (count($error) > 0) {
+        echo '<ul class="list-group mb-2">';
+        foreach ($error as $er) {
+            echo '<li class="font-weight-bold text-danger text-center">' . $er . '</li>';
+        }
+        echo '</ul>';
+    } else
+        echo "";
 }

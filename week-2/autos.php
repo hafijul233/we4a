@@ -33,7 +33,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     if ($year == '' || $year == NULL) {
         array_push($error, "Year field is required.");
     } else if (preg_match("/^[\d]+$/i", $year) == 0) {
-        //input is always string [ is_int()/ is_integer() ] not work
+        //input is always string [ is_int()/ is_integer() ] not work 
         //and database type int so [ is_numeric()/ intval() ] data may get truncated
         //so may a custom validation rule
         array_push($error, "Mileage and year must be numeric");
@@ -43,7 +43,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     if ($mileage == '' || $mileage == NULL) {
         array_push($error, "Mileage field is required.");
     } else if (preg_match("/^[\d]+$/i", $mileage) == 0) {
-        //input is always string [ is_int()/ is_integer() ] not work
+        //input is always string [ is_int()/ is_integer() ] not work 
         //and database type int so [ is_numeric()/ intval() ] data may get truncated
         //so may a custom validation rule
         array_push($error, "Mileage and year must be numeric");
@@ -202,7 +202,6 @@ $autos = ($statement->rowCount() > 0)
       </div>
         <?php endif; ?>
     </div>
-  </div>
   </div>
 </main>
 

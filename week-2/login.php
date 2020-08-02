@@ -2,22 +2,20 @@
 
 $error = [];
 
-if (isset($_POST['login']) && $_POST['login'] == 'submit') {
+if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
     //Email Validation
-    $email = filter_var(htmlentities($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $email = filter_var(htmlentities($_POST['who']), FILTER_SANITIZE_EMAIL);
     if ($email == '' || $email == NULL) {
         array_push($error, "Email address field is required.");
     } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        array_push($error, "Invalid Email Address.");
+        array_push($error, "Email must have an at-sign (@)");
     }
 
     //password
-    $password = htmlentities($_POST['password']);
+    $password = htmlentities($_POST['pass']);
 
     if ($password == '' || $password == NULL) {
         array_push($error, "Password address field is required.");
-    } else if (strlen($password) < 5 || strlen($password) > 100) {
-        array_push($error, "Invalid Password Size.");
     }
 
     //no error found && validation passed
@@ -28,7 +26,8 @@ if (isset($_POST['login']) && $_POST['login'] == 'submit') {
         $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
         $statement->execute(array(':email' => $email, ':password' => $encrypt));
-        $red = $statement->fetch();
+        $red = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
 
         //login failed
         if (!$red) {
@@ -36,13 +35,13 @@ if (isset($_POST['login']) && $_POST['login'] == 'submit') {
             array_push($error, "Incorrect Password.");
         } //login succeed
         else {
-
+            $_SESSION['user'] = $red[0];
             error_log("Login Success. $email");
-            array_push($error, "Login Successful.");
             header("Location: autos.php?name=" . urlencode($email));
         }
-
     }
+} else if(isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
+    header('Location: index.php');
 }
 ?>
 <!doctype html>
@@ -69,51 +68,33 @@ if (isset($_POST['login']) && $_POST['login'] == 'submit') {
         <p class="lead">
           For a password hint, view source and find a password hint
           in the HTML comments.
+          <!-- Email: ('Chuck','csev@umich.edu','123'), ('Glenn','gg@umich.edu','123'); -->
           <!-- Hint: The password is the three character name of the
           programming language used in this class (all lower case)
           followed by 123. -->
         </p>
       </div>
-        <?php if (count($error) > 0) : ?>
-          <ul class="list-group mb-2">
-              <?php foreach ($error as $er) : ?>
-                <li class="font-weight-bold text-danger text-center"><?= $er ?></li>
-              <?php endforeach; ?>
-          </ul>
-        <?php /*elseif (count(error_get_last()) > 0) : ?>
-          <ul class="list-group mb-2">
-              <?php foreach (error_get_last() as $er) : ?>
-                <li class="font-weight-bold text-danger text-center"><?= $er ?></li>
-              <?php endforeach; ?>
-          </ul>
-        <?php */
-        endif; ?>
+        <?php display_error($error) ?>
       <div class="form-label-group">
         <input type="text" id="inputEmail" class="form-control"
-               placeholder="Email address" name="email" size="255" required autofocus>
+               placeholder="Email address" name="who" size="255" required autofocus>
         <label for="inputEmail">Email address</label>
         <span class="valid-feedback" id="emailError"></span>
       </div>
 
       <div class="form-label-group">
         <input type="password" id="inputPassword" class="form-control"
-               placeholder="Password" name="password" required>
+               placeholder="Password" name="pass" required>
         <label for="inputPassword">Password</label>
         <span class="valid-feedback" id="passwordError"></span>
       </div>
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="js" id="inputRemember" name="remember"> Only Server Validation
-        </label>
-      </div>
       <div class="row">
         <div class="col-6">
-          <button class="btn btn-lg btn-primary btn-block"
-                  type="submit" name="login" value="submit">Log in
-          </button>
+          <input class="btn btn-lg btn-primary btn-block"
+                  type="submit" name="submit" value="Log In">
         </div>
         <div class="col-6">
-          <button class="btn btn-lg btn-secondary btn-block" type="reset">Cancel</button>
+          <input class="btn btn-lg btn-secondary btn-block" type="reset" name="cancel" value="Cancel">
         </div>
       </div>
     </form>
@@ -126,48 +107,5 @@ if (isset($_POST['login']) && $_POST['login'] == 'submit') {
 </footer>
 <script src="../assets/js/jquery.min.js"></script>
 <script src="../assets/js/bootstrap.bundle.js"></script>
-
-<script>
-    $('form').submit(function (e) {
-        //form validation
-        const form = $('form');
-        const email = $('#inputEmail');
-        const pass = $('#inputPassword');
-        const remember = $('#inputRemember');
-        var emailProof = false;
-        var passProof = false;
-
-        if (!remember.is(':checked')) {
-            //email validation
-            if (email.val() == null || email.val() === '') {
-                email.addClass('is-invalid');
-                $('#emailError').addClass('invalid-feedback').html('Email Address Field is Required.');
-            } else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.val()) !== true) {
-                email.addClass('is-invalid');
-                $('#emailError').addClass('invalid-feedback').html('Invalid Email Address.');
-            } else {
-                emailProof = true;
-            }
-
-            //password validation
-            if (pass.val() == null || pass.val() === '') {
-                pass.addClass('is-invalid');
-                $('#passwordError').addClass('invalid-feedback').html('Password Field is Required.');
-            } else if (pass.val().length < 5) {
-                email.addClass('is-invalid');
-                $('#passwordError').addClass('invalid-feedback').html('Password is too small. Minimum 5 character');
-            } else {
-                passProof = true;
-            }
-            if (emailProof === true && passProof === true) {
-                form.addClass('was-validated');
-                return true;
-            } else {
-                e.preventDefault();
-                //return false;
-            }
-        }
-    });
-</script>
 </body>
 </html>
