@@ -1,8 +1,9 @@
 <?php require "../include/pdo.php";
 
-$error = [];
+$salt = "it is not a pinch of salt";
 
 if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
+    $error = [];
     //Email Validation
     $email = filter_var(htmlentities($_POST['email']), FILTER_SANITIZE_EMAIL);
     if ($email == '' || $email == NULL) {
@@ -11,16 +12,15 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
         array_push($error, "Email must have an at-sign (@)");
     }
 
-    //password
+    //password validation
     $password = htmlentities($_POST['pass']);
-
     if ($password == '' || $password == NULL) {
-        array_push($error, "Password address field is required.");
+        array_push($error, "Password field is required.");
     }
 
     //no error found && validation passed
     if (count($error) == 0) {
-        $encrypt = md5($password);
+        $encrypt = md5($salt . $password);
 
         $sql = "SELECT * FROM `users` WHERE `email` = :email AND `stored_hash` = :password LIMIT 1";
         $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
@@ -28,20 +28,34 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
         $statement->execute(array(':email' => $email, ':password' => $encrypt));
         $red = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
         //login failed
         if (!$red) {
             error_log("Login Fail.  $email  $encrypt");
             array_push($error, "Incorrect Password.");
+
+            //errors collection
+            $_SESSION['errors'] = $error;
+
+            //redirect to this page as get req
+            header("Location: login.php");
+            return;
         } //login succeed
         else {
             $_SESSION['user'] = $red[0];
             error_log("Login Success. $email");
-            header("Location: autos.php?name=" . urlencode($email));
+
+            //redirect to view.php page as get req
+            header("Location: view.php");
+            return;
         }
     }
-} else if (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
+
+}
+//login cancelled
+elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
+    //redirect to index.php
     header('Location: index.php');
+    return;
 }
 ?>
 <!doctype html>
@@ -74,7 +88,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
           followed by 123. -->
         </p>
       </div>
-        <?php display_error($error) ?>
+      <?= display_error() ?>
       <div class="form-label-group">
         <input type="text" id="inputEmail" class="form-control"
                placeholder="Email address" name="email" size="255" required autofocus>

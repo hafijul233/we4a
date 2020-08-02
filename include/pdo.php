@@ -15,22 +15,25 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if ($pdo) {
-        //error_log("Database Connected Successfully.");
+        error_log("Database Connected Successfully.");
     }
 } catch (PDOException $error) {
-    //error_log($error->getMessage() . ".");
+    error_log($error->getMessage() . ".");
     die("Connection Error: " . $error->getMessage());
 }
 
 
-function display_error($error)
+function display_error()
 {
-    if (count($error) > 0) {
-        echo '<ul class="list-group mb-2">';
-        foreach ($error as $er) {
-            echo '<li class="font-weight-bold text-danger text-center">' . $er . '</li>';
+    $output = "";
+    if (!empty($_SESSION['errors'])) {
+        $output = '<ul class="list-group mb-2">';
+        foreach ($_SESSION['errors'] as $er) {
+            $output .= '<li class="font-weight-bold text-danger text-center">' . $er . '</li>';
         }
-        echo '</ul>';
-    } else
-        echo "";
+
+        unset($_SESSION['errors']);
+        $output .= '</ul>';
+    }
+    return $output;
 }
