@@ -22,22 +22,16 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     ) {
         array_push($error, "All fields are required");
     } else if (preg_match("/^[\d]+$/i", $year) == 0) {
-        //input is always string [ is_int()/ is_integer() ] not work
-        //and database type int so [ is_numeric()/ intval() ] data may get truncated
-        //so made a custom validation rule
         array_push($error, "Year must be an integer");
     } elseif (preg_match("/^[\d]+$/i", $mileage) == 0) {
-        //input is always string [ is_int()/ is_integer() ] not work
-        //and database type int so [ is_numeric()/ intval() ] data may get truncated
-        //so made a custom validation rule
         array_push($error, "Mileage must be an integer");
     }
 
     //no error found && validation passed
     if (count($error) == 0) {
 
-        $sql = "INSERT INTO `autos`(`make`, `model`,`year`, `mileage`, `added_by`, `photo`) " .
-            "VALUES (:make, :model, :year, :mileage, :user, :photo)";
+        $sql = "INSERT INTO `autos`(`make`, `model`, `year`, `mileage`, `added_by`) " .
+            "VALUES (:make, :model, :year, :mileage, :user)";
         $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
         $result = $statement->execute(array(

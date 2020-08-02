@@ -1,91 +1,89 @@
 <?php require "../include/pdo.php";
 
 //if session don't have name
-if (empty($_SESSION['user']))
+if (empty($_SESSION['user'])) {
     die("ACCESS DENIED");
+}
+//display data on form
+elseif (!empty($_GET['auto_id'])) {
+//display form fields with old one's
+    $sql = "SELECT * FROM `autos` WHERE `added_by`= :id AND `auto_id` = :auto;";
+    $auto_id = intval($_GET['auto_id']);
+    $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
-if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
+    $statement->execute(array(
+        ':id' => $_SESSION['user']['user_id'],
+        ':auto' => $auto_id
+    ));
+
+    $auto = ($statement->rowCount() > 0)
+        ? $statement->fetchAll(PDO::FETCH_ASSOC)[0]
+        : null;
+
+}
+//update form data
+elseif (!empty($_POST['insert'])) {
     $error = $confirm = [];
+    $auto_id = intval($_GET['auto_id']);
     //Email Validation
     $make = filter_var(htmlentities($_POST['make']), FILTER_SANITIZE_STRING);
+    $model = filter_var(htmlentities($_POST['model']), FILTER_SANITIZE_STRING);
     $year = filter_var(htmlentities($_POST['year']), FILTER_SANITIZE_STRING);
     $mileage = filter_var(htmlentities($_POST['mileage']), FILTER_SANITIZE_STRING);
     $url = filter_var(htmlentities($_POST['url']), FILTER_SANITIZE_URL);
     $user_id = $_SESSION['user']['user_id'];
 
     //Make Value validation
-    if ($make == '' || $make == NULL) {
-        array_push($error, "Make is required");
-    }
-
-    //Year value Validation
-    if ($year == '' || $year == NULL) {
-        array_push($error, "Year field is required.");
+    if ($make == '' || $make == NULL
+        || $model == '' || $model == NULL
+        || $year == '' || $year == NULL
+        || $mileage == '' || $mileage == NULL
+    ) {
+        array_push($error, "All fields are required");
     } else if (preg_match("/^[\d]+$/i", $year) == 0) {
-        //input is always string [ is_int()/ is_integer() ] not work
-        //and database type int so [ is_numeric()/ intval() ] data may get truncated
-        //so made a custom validation rule
-        array_push($error, "Mileage and year must be numeric");
-    }
-
-    //Mileage Value validation
-    if ($mileage == '' || $mileage == NULL) {
-        array_push($error, "Mileage field is required.");
+        array_push($error, "Year must be an integer");
     } elseif (preg_match("/^[\d]+$/i", $mileage) == 0) {
-        //input is always string [ is_int()/ is_integer() ] not work
-        //and database type int so [ is_numeric()/ intval() ] data may get truncated
-        //so made a custom validation rule
-        array_push($error, "Mileage and year must be numeric");
+        array_push($error, "Mileage must be an integer");
     }
-
-    //URL Validation
-    if (strlen($url) > 0) {
-        if (strlen($url) > 900 || strlen($url) < 1) {
-            array_push($error, "Very Large URL. Try Shorting Url");
-        } else if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            //filter valid url based on RFC 2396 [http://www.faqs.org/rfcs/rfc2396.html]
-            //generic syntax rule
-            array_push($error, "URL has Invalid Characters");
-        }
-    } else $url = null;
 
     //no error found && validation passed
     if (count($error) == 0) {
 
-        $sql = "INSERT INTO `autos`(`make`, `year`, `mileage`, `added_by`, `photo`) " .
-            "VALUES (:make, :year, :mileage, :user, :photo)";
+        $sql = "UPDATE `autos` SET `make` = :make, `model` = :model, `year` = :year, " .
+            " `mileage` = :mileage, `added_by` = :user WHERE `auto_id` = :id";
         $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
         $result = $statement->execute(array(
+            ':id' => $auto_id,
             ':make' => $make,
+            ':model' => $model,
             ':year' => $year,
             ':mileage' => $mileage,
             ':user' => $user_id,
-            ':photo' => $url
         ));
 
-        //insert failed
+        //edit failed
         if (!$result) {
-            error_log("Record Insert Failed");
-            $confirm = ['type' => 'text-danger', 'msg' => "Record Insert Failed"];
-        } //insert succeed
+            error_log("Record edited Failed");
+            $confirm = ['type' => 'text-danger', 'msg' => "Record edited Failed"];
+        } //edit succeed
         else {
-            error_log("Record Insert");
-            $confirm = ['type' => 'text-success', 'msg' => "Record Insert Successfully"];
+            error_log("Record edited");
+            $confirm = ['type' => 'text-success', 'msg' => "Record edited"];
         }
 
         //getting confirm message
         $_SESSION['confirm'] = $confirm;
-        header("Location: view.php");
-        return;
+        //header("Location: index.php");
+        //return;
     }
 
     $_SESSION['errors'] = $error;
-    header("Location: add.php");
-    return;
+    //header("Location: edit.php?auto_id=" . $auto_id);
+    //return;
 
 } else if (isset($_POST['cancel']) && $_POST['cancel'] == "Cancel") {
-    header("Location: view.php");
+    header("Location: index.php");
 }
 
 ?>
@@ -105,12 +103,15 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-    <h1 class="h1">Tracking Autos for <?= $_SESSION['user']['email'] ?></h1>
+    <pre>
+      <?php print_r([$_SESSION, $_POST, $_GET]) ?>
+    </pre>
+    <h1 class="h1">Editing Automobile</h1>
     <div class="row">
       <div class="col-12">
         <div class="card">
-          <p class=" font-weight-bold card-header bg-success text-white">Insert New Mileage</p>
-          <form action="add.php" accept-charset="UTF-8" method="post" autocomplete="off"
+          <p class=" font-weight-bold card-header bg-info text-white">Edit Old Automobiles</p>
+          <form action="<?= "edit.php?auto_id=" . $auto_id ?>" accept-charset="UTF-8" method="post" autocomplete="off"
                 spellcheck="false">
             <div class="card-body">
                 <?= display_error() ?>
@@ -121,7 +122,17 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
                 </label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="make" id="make"
-                         size="128" minlength="1" maxlength="128">
+                         size="128" minlength="1" value="<?= $auto['make'] ?>" maxlength="128">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="model" class="col-form-label col-md-3">
+                  Model
+                  <span class="font-weight-bold text-danger">*</span>
+                </label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="model" id="model"
+                         size="255" minlength="1" value="<?= $auto['model'] ?>" maxlength="255">
                 </div>
               </div>
               <div class="form-group row">
@@ -131,7 +142,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
                 </label>
                 <div class="col-md-9">
                   <input type="text" id="year" class="form-control" name="year"
-                         size="11" minlength="1" maxlength="11">
+                         size="11" minlength="1" value="<?= $auto['year'] ?>" maxlength="11">
                 </div>
               </div>
               <div class="form-group row">
@@ -141,22 +152,13 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
                 </label>
                 <div class="col-md-9">
                   <input type="text" id="mileage" class="form-control" name="mileage"
-                         size="11" minlength="1" maxlength="11">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="url" class="col-form-label col-md-3">
-                  Photo(URL)
-                </label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" name="url" id="url"
-                         size="255" minlength="1" maxlength="255">
+                         size="11" minlength="1" value="<?= $auto['mileage'] ?>" maxlength="11">
                 </div>
               </div>
             </div>
             <div class="card-footer">
               <div class="row justify-content-between">
-                <input class="btn btn-success" type="submit" name="insert" value="Add">
+                <input class="btn btn-success" type="submit" name="insert" value="Save">
                 <input class="btn btn-secondary" type="submit" name="cancel" value="Cancel">
               </div>
             </div>
