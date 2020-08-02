@@ -54,7 +54,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
 
         //getting confirm message
         $_SESSION['confirm'] = $confirm;
-        header("Location: view.php");
+        header("Location: index.php");
         return;
     }
 
@@ -63,7 +63,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     return;
 
 } else if (isset($_POST['cancel']) && $_POST['cancel'] == "Cancel") {
-    header("Location: view.php");
+    header("Location: index.php");
 }
 
 ?>

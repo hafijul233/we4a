@@ -5,7 +5,7 @@ if (empty($_SESSION['user'])) {
     die("ACCESS DENIED");
 }
 //display data on form
-elseif (!empty($_GET['auto_id'])) {
+elseif (!empty($_GET['auto_id']) && empty($_POST['insert'])) {
 //display form fields with old one's
     $sql = "SELECT * FROM `autos` WHERE `added_by`= :id AND `auto_id` = :auto;";
     $auto_id = intval($_GET['auto_id']);
@@ -22,7 +22,7 @@ elseif (!empty($_GET['auto_id'])) {
 
 }
 //update form data
-elseif (!empty($_POST['insert'])) {
+elseif (!empty($_GET['auto_id']) && !empty($_POST['insert'])) {
     $error = $confirm = [];
     $auto_id = intval($_GET['auto_id']);
     //Email Validation
@@ -30,7 +30,6 @@ elseif (!empty($_POST['insert'])) {
     $model = filter_var(htmlentities($_POST['model']), FILTER_SANITIZE_STRING);
     $year = filter_var(htmlentities($_POST['year']), FILTER_SANITIZE_STRING);
     $mileage = filter_var(htmlentities($_POST['mileage']), FILTER_SANITIZE_STRING);
-    $url = filter_var(htmlentities($_POST['url']), FILTER_SANITIZE_URL);
     $user_id = $_SESSION['user']['user_id'];
 
     //Make Value validation
@@ -74,18 +73,18 @@ elseif (!empty($_POST['insert'])) {
 
         //getting confirm message
         $_SESSION['confirm'] = $confirm;
-        //header("Location: index.php");
-        //return;
+        header("Location: index.php");
+        return;
     }
 
     $_SESSION['errors'] = $error;
-    //header("Location: edit.php?auto_id=" . $auto_id);
-    //return;
+    header("Location: edit.php?auto_id=" . $auto_id);
+    return;
 
 } else if (isset($_POST['cancel']) && $_POST['cancel'] == "Cancel") {
     header("Location: index.php");
+    return;
 }
-
 ?>
 <!doctype html>
 <html lang="en" class="h-100">
@@ -103,9 +102,6 @@ elseif (!empty($_POST['insert'])) {
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-    <pre>
-      <?php print_r([$_SESSION, $_POST, $_GET]) ?>
-    </pre>
     <h1 class="h1">Editing Automobile</h1>
     <div class="row">
       <div class="col-12">

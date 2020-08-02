@@ -32,7 +32,7 @@ if (!empty($_SESSION['user'])) {
   <div class="container">
     <h1 class="h1">Welcome to Automobiles Database</h1>
       <?php if (empty($_SESSION['user'])) { ?>
-        <a class="font-weight-bold" href="login.php">Please Log In</a>
+        <a class="font-weight-bold" href="login.php">Please log in</a>
         <p class="lead">
           Attempt to <a class="font-weight-bold" href="add.php">add data</a> without logging in
         </p>

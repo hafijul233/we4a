@@ -42,7 +42,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
             error_log("Login Success. $email");
 
             //redirect to view.php page as get req
-            header("Location: view.php");
+            header("Location: index.php");
             return;
         }
     }
