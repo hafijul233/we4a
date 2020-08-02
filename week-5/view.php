@@ -42,18 +42,43 @@ $autos = ($statement->rowCount() > 0)
               <p class="card-header font-weight-bold bg-primary text-white">Automobiles Added By
                 : <?= htmlentities($_SESSION['user']['full_name']) ?></p>
               <div class="card-body">
-                <ul class="list-group mx-3">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr class="text-center">
+                      <th>ID</th>
+                      <th>Year</th>
+                      <th>Make</th>
+                      <th>Mileage</th>
+                      <th colspan="2">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     <?php foreach ($autos as $auto) : ?>
-                      <li>
-                          <?= htmlentities($auto['year'] . " " . $auto['make'] . " / " . $auto['mileage'], ENT_COMPAT, ini_get("default_charset"), false) ?>
-                          <?php if (!empty($auto['photo'])) : ?>
-                            <a href="image.php?ref= <?= urlencode($auto['photo']) ?>" target="_blank"
-                               class="float-right">
-                                <?= $auto['make'] ?>
-                            </a>
-                          <?php endif; ?>
-                      </li>
+                      <tr>
+                          <td><?= htmlentities($auto['auto_id']) ?></td>
+                        <td><?= htmlentities($auto['year']) ?></td>
+                        <td><?= htmlentities($auto['make'], ENT_COMPAT, ini_get("default_charset"), false) ?></td>
+                        <td><?= htmlentities($auto['mileage']) ?></td>
+                        <td><a href="edit.php?user_id=<?= $auto['auto_id'] ?>" class="btn btn-warning">Edit</a></td>
+                        <td><a href="delete.php?user_id=<?= $auto['auto_id'] ?>" class="btn btn-danger">Delete</a></td>
+                      </tr>
                     <?php endforeach; ?>
+                    </tbody>
+                    <tfoot>
+                    <tr class="text-center">
+                      <th>ID</th>
+                      <th>Year</th>
+                      <th>Make</th>
+                      <th>Mileage</th>
+                      <th colspan="2">Action</th>
+                    </tr>
+                    </tfoot>
+                  </table>
+                </div>
+
+                <ul class="list-group mx-3">
+
                 </ul>
               </div>
             </div>

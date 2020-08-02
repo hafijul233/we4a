@@ -23,7 +23,10 @@
         <p class="lead">
             <a class="text-dark" href="https://www.wa4e.com/assn/autosess" target="_blank">Specification for this Application</a>
         </p>
-
+      <a class="font-weight-bold" href="week-5/index.php">Week 5 Assignment</a>
+      <p class="lead">
+        <a class="text-dark" href="https://www.wa4e.com/assn/autosess" target="_blank">Specification for this Application</a>
+      </p>
     </div>
 </main>
 
