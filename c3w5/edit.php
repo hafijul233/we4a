@@ -3,8 +3,7 @@
 //if session don't have name
 if (empty($_SESSION['user'])) {
     die("ACCESS DENIED");
-}
-//display data on form
+} //display data on form
 elseif (!empty($_GET['auto_id']) && empty($_POST['insert'])) {
 //display form fields with old one's
     $sql = "SELECT * FROM `autos` WHERE `added_by`= :id AND `auto_id` = :auto;";
@@ -20,8 +19,7 @@ elseif (!empty($_GET['auto_id']) && empty($_POST['insert'])) {
         ? $statement->fetchAll(PDO::FETCH_ASSOC)[0]
         : null;
 
-}
-//update form data
+} //update form data
 elseif (!empty($_GET['auto_id']) && !empty($_POST['insert'])) {
     $error = $confirm = [];
     $auto_id = intval($_GET['auto_id']);

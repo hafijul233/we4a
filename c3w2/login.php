@@ -27,7 +27,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
 
         $statement->execute(array(':email' => $email, ':password' => $encrypt));
         $red = $statement->fetchAll(PDO::FETCH_ASSOC);
-        
+
 
         //login failed
         if (!$red) {
@@ -40,7 +40,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
             header("Location: autos.php?name=" . urlencode($email));
         }
     }
-} else if(isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
+} else if (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
     header('Location: index.php');
 }
 ?>
@@ -91,7 +91,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
       <div class="row">
         <div class="col-6">
           <input class="btn btn-lg btn-primary btn-block"
-                  type="submit" name="submit" value="Log In">
+                 type="submit" name="submit" value="Log In">
         </div>
         <div class="col-6">
           <input class="btn btn-lg btn-secondary btn-block" type="reset" name="cancel" value="Cancel">

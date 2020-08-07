@@ -53,10 +53,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
     //redirect to this page as get req
     header("Location: login.php");
     return;
-}
-
-
-//login cancelled
+} //login cancelled
 elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
     //redirect to index.php
     header('Location: index.php');
@@ -93,8 +90,8 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
           followed by 123. -->
         </p>
       </div>
-      <?php //print_r($_SESSION) ?>
-      <?= display_error() ?>
+        <?php //print_r($_SESSION) ?>
+        <?= display_error() ?>
       <div class="form-label-group">
         <input type="text" id="inputEmail" class="form-control"
                placeholder="Email address" name="email" size="255" required autofocus>
