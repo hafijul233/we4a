@@ -1,63 +1,48 @@
 <?php require "../include/pdo.php";
 
-$salt = "it is not a pinch of salt";
+$title = "Mohammad Hafijul Islam";
 
-if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
-    $error = [];
-    //Email Validation
-    $email = filter_var(htmlentities($_POST['email']), FILTER_SANITIZE_EMAIL);
-    if ($email == '' || $email == NULL) {
-        array_push($error, "Email address field is required.");
-    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        array_push($error, "Email must have an at-sign (@)");
-    }
+$default = [
+    'type' => 'text-danger',
+    'msg' => "Not found"
+];
 
-    //password validation
-    $password = htmlentities($_POST['pass']);
-    if ($password == '' || $password == NULL) {
-        array_push($error, "Password field is required.");
-    }
+$time_diff = "";
 
-    //no error found && validation passed
-    if (count($error) == 0) {
-        $encrypt = md5($salt . $password);
+function isValidMd5($md5)
+{
+    return preg_match('/^[a-f0-9]{32}$/', $md5);
+}
 
-        $sql = "SELECT * FROM `users` WHERE `email` = :email AND `stored_hash` = :password LIMIT 1";
-        $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+if (isset($_GET['submit']) && $_GET['submit'] == 'Crack MD5') {
+    //dat validation
+    $pin_value = filter_var(htmlentities($_GET['md5']), FILTER_SANITIZE_STRING);
 
-        $statement->execute(array(':email' => $email, ':password' => $encrypt));
-        $red = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $start_time = microtime(true);
 
-        //login failed
-        if (!$red) {
-            error_log("Login Fail.  $email  $encrypt");
-            array_push($error, "Incorrect Password.");
-
-            //errors collection
-            $_SESSION['errors'] = $error;
-
-        } //login succeed
-        else {
-            $_SESSION['user'] = $red[0];
-            error_log("Login Success. $email");
-
-            //redirect to view.php page as get req
-            header("Location: view.php");
-            return;
+    $trials = [];
+    $rev_pin = '';
+    for ($i = 0; $i < 10000; $i++) {
+        $trial_pin = str_pad(strval($i), 4, "0", STR_PAD_LEFT);
+        $trial_md5 = hash('md5', $trial_pin);
+        array_push($trials, ['md5' => $trial_md5, 'pin' => $trial_pin]);
+        if ($trial_md5 == $pin_value) {
+            $rev_pin = $trial_pin;
+        } else if ($rev_pin != '' && count($trials) >= 15) {
+            break;
         }
     }
 
-    //errors collection
-    $_SESSION['errors'] = $error;
-
-    //redirect to this page as get req
-    header("Location: login.php");
-    return;
-} //login cancelled
-elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
-    //redirect to index.php
-    header('Location: index.php');
-    return;
+    if ($rev_pin != '') {
+        $default = [
+            'type' => 'text-success',
+            'msg' => $rev_pin
+        ];
+    }
+    //shuffle array for fun
+    shuffle($trials);
+    //execution time
+    $time_diff = microtime(true) - $start_time;
 }
 ?>
 <!doctype html>
@@ -65,7 +50,7 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Mohammad Hafijul Islam - Autos Database</title>
+  <title><?= $title ?> - MD5 Cracker</title>
   <link rel="shortcut icon" href="../assets/img/icons.jpg" type="image/jpg">
   <!-- Bootstrap core CSS -->
   <link href="../assets/css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -75,49 +60,44 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
 <body class="d-flex flex-column h-100">
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
-  <div class="container">
-    <form class="form-signin" action="login.php" method="post" accept-charset="UTF-8" autocomplete="off"
-          spellcheck="true">
-      <div class="text-center mb-4">
-        <img class="mb-4" src="../assets/img/icons.jpg" alt="Logo" width="72" height="72">
-        <h1 class="h3 mb-3 font-weight-normal">Please Log In</h1>
-        <p class="lead">
-          For a password hint, view source and find a password hint
-          in the HTML comments.
-          <!-- Email: ('Chuck','csev@umich.edu','123'), ('Glenn','gg@umich.edu','123'); -->
-          <!-- Hint: The password is the three character name of the
-          programming language used in this class (all lower case)
-          followed by 123. -->
-        </p>
-      </div>
-        <?php //print_r($_SESSION) ?>
-        <?= display_error() ?>
-      <div class="form-label-group">
-        <input type="text" id="inputEmail" class="form-control"
-               placeholder="Email address" name="email" size="255" required autofocus>
-        <label for="inputEmail">Email address</label>
-      </div>
-
-      <div class="form-label-group">
-        <input type="password" id="inputPassword" class="form-control"
-               placeholder="Password" name="pass" required>
-        <label for="inputPassword">Password</label>
-      </div>
-      <div class="row">
-        <div class="col-6">
-          <input class="btn btn-lg btn-primary btn-block"
-                 type="submit" name="submit" value="Log In">
-        </div>
-        <div class="col-6">
-          <input class="btn btn-lg btn-secondary btn-block" type="reset" name="cancel" value="Cancel">
-        </div>
-      </div>
-    </form>
+  <div class="text-center mb-4">
+    <h1 class="h3 mb-3 font-weight-normal">MD5 Cracker</h1>
   </div>
+  <form class="form-inline" action="index.php" method="get" accept-charset="UTF-8" autocomplete="off"
+        spellcheck="true">
+      <?= display_error() ?>
+    <div class="form-label-group mr-3">
+      <input type="text" id="inputEmail" class="form-control"
+             placeholder="Email address" name="md5" size="32">
+      <label for="inputEmail">MD5 HASH</label>
+    </div>
+    <div class="form-group mt-n3">
+      <input class="btn btn-lg btn-primary"
+             type="submit" name="submit" value="Crack MD5">
+    </div>
+  </form>
+  Original Text: <span class="font-weight-bold <?= $default['type'] ?>"><?= $default['msg'] ?></span>
+  <pre>
+    <p>Debug Output:</p>
+<?php
+if (!empty($trials)) {
+    $i = 1;
+    foreach ($trials as $trial) {
+        if ($i <= 15) {
+            echo $trial['md5'] . " " . $trial['pin'] . PHP_EOL;
+        } else
+            break;
+
+        $i++;
+    }
+    echo "Elapsed time:" . $time_diff;
+}
+?>
+</pre>
 </main>
 <footer class="footer mt-auto py-3">
   <div class="container">
-    <span class="text-muted">&copy; <?= date('Y') ?>. Mohammad Hafijul Islam</span>
+    <span class="text-muted">&copy; <?= date('Y') ?>. <?= $title ?></span>
   </div>
 </footer>
 <script src="../assets/js/jquery.min.js"></script>
