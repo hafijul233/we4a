@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+$title = "Mohammad Hafijul Islam";
 
 //Database Connection Object
 $server = "localhost";
