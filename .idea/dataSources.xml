@@ -7,5 +7,17 @@
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mariadb://localhost:3306/misc</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="music@localhost" uuid="de469bc2-06c6-49f7-af9d-3fd00be07d7a">
+      <driver-ref>mariadb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mariadb://localhost:3306/music</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="course@localhost" uuid="56890a4e-7de0-4448-a89a-a1ce88c5ca63">
+      <driver-ref>mariadb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mariadb://localhost:3306/course</jdbc-url>
+    </data-source>
   </component>
 </project>
