@@ -1,7 +1,5 @@
 <?php require "../include/pdo.php";
 
-$title = "Mohammad Hafijul Islam";
-
 $default = [
     'type' => 'text-danger',
     'msg' => "Not found"

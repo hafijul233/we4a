@@ -4,42 +4,40 @@
 if (empty($_SESSION['user'])) {
     die("ACCESS DENIED");
 } //display data on form
-elseif (!empty($_GET['auto_id']) && empty($_POST['delete'])) {
+elseif (!empty($_GET['profile_id']) && empty($_POST['delete'])) {
 //display form fields with old one's
-    $sql = "SELECT * FROM `autos` WHERE `added_by`= :id AND `auto_id` = :auto;";
-    $auto_id = intval($_GET['auto_id']);
+    $sql = "SELECT * FROM `profile` WHERE `profile_id` = :profile;";
+    $profile_id = intval($_GET['profile_id']);
     $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
     $statement->execute(array(
-        ':id' => $_SESSION['user']['user_id'],
-        ':auto' => $auto_id
+        ':profile' => $profile_id
     ));
 
-    $auto = ($statement->rowCount() > 0)
+    $profile = ($statement->rowCount() > 0)
         ? $statement->fetchAll(PDO::FETCH_ASSOC)[0]
         : null;
 
 } //update form data
-elseif (!empty($_GET['auto_id']) && !empty($_POST['delete'])) {
-    $auto_id = intval($_GET['auto_id']);
+elseif (!empty($_GET['profile_id']) && !empty($_POST['delete'])) {
+    $profile_id = intval($_GET['profile_id']);
     $user_id = $_SESSION['user']['user_id'];
 
-    $sql = "DELETE FROM `autos` WHERE `auto_id` = :id AND `added_by` = :user";
+    $sql = "DELETE FROM `profile` WHERE `profile_id` = :id;";
     $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
     $result = $statement->execute(array(
-        ':id' => $auto_id,
-        ':user' => $user_id,
+        ':id' => $profile_id,
     ));
 
     //edit failed
     if (!$result) {
-        error_log("Record deleted Failed");
-        $confirm = ['type' => 'text-danger', 'msg' => "Record deleted Failed"];
+        error_log("profile deleted Failed");
+        $confirm = ['type' => 'text-danger', 'msg' => "profile deleted Failed"];
     } //edit succeed
     else {
-        error_log("Record deleted");
-        $confirm = ['type' => 'text-success', 'msg' => "Record deleted"];
+        error_log("profile deleted");
+        $confirm = ['type' => 'text-success', 'msg' => "profile deleted"];
     }
 
     //getting confirm message
@@ -68,17 +66,19 @@ elseif (!empty($_GET['auto_id']) && !empty($_POST['delete'])) {
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-    <h1 class="h1">Delete Automobile</h1>
+    <h1 class="h1">Delete Profile</h1>
     <div class="row">
       <div class="col-12">
         <div class="card">
           <p class=" font-weight-bold card-header bg-info text-white">Delete Automobiles</p>
-          <form action="<?= "delete.php?auto_id=" . $auto_id ?>" accept-charset="UTF-8" method="post" autocomplete="off"
+          <form action="<?= "delete.php?profile_id=" . $profile_id ?>" accept-charset="UTF-8" method="post" autocomplete="off"
                 spellcheck="false">
             <div class="card-body">
                 <?= display_error() ?>
-              <p class="font-weight-bold text-dark">Confirm:
-                Deleting <?= htmlentities($auto['make'], ENT_COMPAT, ini_get("default_charset"), false) ?></p>
+              <p class="font-weight-bold text-dark">First Name:
+                  <?= htmlentities($profile['first_name'], ENT_COMPAT, ini_get("default_charset"), false) ?></p>
+              <p class="font-weight-bold text-dark">Last Name:
+                  <?= htmlentities($profile['last_name'], ENT_COMPAT, ini_get("default_charset"), false) ?></p>
             </div>
             <div class="card-footer">
               <div class="row justify-content-between">

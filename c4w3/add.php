@@ -7,49 +7,47 @@ if (empty($_SESSION['user']))
 if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
     $error = $confirm = [];
     //Email Validation
-    $make = filter_var(htmlentities($_POST['make']), FILTER_SANITIZE_STRING);
-    $model = filter_var(htmlentities($_POST['model']), FILTER_SANITIZE_STRING);
-    $year = filter_var(htmlentities($_POST['year']), FILTER_SANITIZE_STRING);
-    $mileage = filter_var(htmlentities($_POST['mileage']), FILTER_SANITIZE_STRING);
-    $url = filter_var(htmlentities($_POST['url']), FILTER_SANITIZE_URL);
+    $first = filter_var(htmlentities($_POST['first_name']), FILTER_SANITIZE_STRING);
+    $last = filter_var(htmlentities($_POST['last_name']), FILTER_SANITIZE_STRING);
+    $email = filter_var(htmlentities($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $headline = filter_var(htmlentities($_POST['headline']), FILTER_SANITIZE_STRING);
+    $summary = filter_var(htmlentities($_POST['summary']), FILTER_SANITIZE_STRING);
     $user_id = $_SESSION['user']['user_id'];
 
     //Make Value validation
-    if ($make == '' || $make == NULL
-        || $model == '' || $model == NULL
-        || $year == '' || $year == NULL
-        || $mileage == '' || $mileage == NULL
+    if ($first == '' || $first == NULL || $last == '' || $last == NULL
+        || $email == '' || $email == NULL || $headline == '' || $email == NULL
+        || $summary == '' || $summary == NULL
     ) {
         array_push($error, "All fields are required");
-    } else if (preg_match("/^[\d]+$/i", $year) == 0) {
-        array_push($error, "Year must be an integer");
-    } elseif (preg_match("/^[\d]+$/i", $mileage) == 0) {
-        array_push($error, "Mileage must be an integer");
+    } else if (filter_var($email, FILTER_VALIDATE_EMAIL) == false) {
+        array_push($error, "Email address must contain @");
     }
 
     //no error found && validation passed
     if (count($error) == 0) {
 
-        $sql = "INSERT INTO `autos`(`make`, `model`, `year`, `mileage`, `added_by`) " .
-            "VALUES (:make, :model, :year, :mileage, :user)";
-        $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sql = 'INSERT INTO profile(`user_id`, `first_name`, `last_name`, `email`, `headline`, `summary`)
+  VALUES ( :uid, :fn, :ln, :em, :he, :su)';
+        $stmt = $pdo->prepare($sql);
 
-        $result = $statement->execute(array(
-            ':make' => $make,
-            ':model' => $model,
-            ':year' => $year,
-            ':mileage' => $mileage,
-            ':user' => $user_id,
-        ));
+        $result = $stmt->execute([
+            ':uid' => $user_id,
+            ':fn' => htmlentities($_POST['first_name']),
+            ':ln' => htmlentities($_POST['last_name']),
+            ':em' => htmlentities($_POST['email']),
+            ':he' => htmlentities($_POST['headline']),
+            ':su' => htmlentities($_POST['summary']),
+        ]);
 
         //insert failed
         if (!$result) {
-            error_log("Record added Failed");
-            $confirm = ['type' => 'text-danger', 'msg' => "Record added Failed"];
+            error_log("Profile added Failed");
+            $confirm = ['type' => 'text-danger', 'msg' => "Profile added Failed"];
         } //insert succeed
         else {
-            error_log("Record added");
-            $confirm = ['type' => 'text-success', 'msg' => "Record added"];
+            error_log("Profile added");
+            $confirm = ['type' => 'text-success', 'msg' => "Profile added"];
         }
 
         //getting confirm message
@@ -83,53 +81,63 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-    <h1 class="h1">Tracking Autos for <?= $_SESSION['user']['email'] ?></h1>
+    <h1 class="h1">Adding Profile for <?= $_SESSION['user']['name'] ?></h1>
     <div class="row">
       <div class="col-12">
         <div class="card">
-          <p class=" font-weight-bold card-header bg-success text-white">Insert New Mileage</p>
+          <p class=" font-weight-bold card-header bg-success text-white">Add Profile</p>
           <form action="add.php" accept-charset="UTF-8" method="post" autocomplete="off"
                 spellcheck="false">
             <div class="card-body">
                 <?= display_error() ?>
               <div class="form-group row">
-                <label for="make" class="col-form-label col-md-3">
-                  Make
+                <label for="first_name" class="col-form-label col-md-3">
+                  First Name
                   <span class="font-weight-bold text-danger">*</span>
                 </label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" name="make" id="make"
-                         size="128" minlength="1" maxlength="128">
+                  <input type="text" class="form-control" name="first_name" id="first_name"
+                         size="128" minlength="1" maxlength="30">
                 </div>
               </div>
               <div class="form-group row">
-                <label for="model" class="col-form-label col-md-3">
-                  Model
+                <label for="last_name" class="col-form-label col-md-3">
+                  Last Name
                   <span class="font-weight-bold text-danger">*</span>
                 </label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" name="model" id="model"
-                         size="255" minlength="1" maxlength="255">
+                  <input type="text" class="form-control" name="last_name" id="last_name"
+                         size="128" minlength="1" maxlength="30">
                 </div>
               </div>
               <div class="form-group row">
-                <label for="year" class="col-form-label col-md-3">
-                  Year
+                <label for="email" class="col-form-label col-md-3">
+                  Email
                   <span class="font-weight-bold text-danger">*</span>
                 </label>
                 <div class="col-md-9">
-                  <input type="text" id="year" class="form-control" name="year"
-                         size="11" minlength="1" maxlength="11">
+                  <input type="text" class="form-control" name="email" id="email"
+                         size="60" minlength="1" maxlength="60">
                 </div>
               </div>
               <div class="form-group row">
-                <label for="mileage" class="col-form-label col-md-3">
-                  Mileage
+                <label for="headline" class="col-form-label col-md-3">
+                  Headline
                   <span class="font-weight-bold text-danger">*</span>
                 </label>
                 <div class="col-md-9">
-                  <input type="text" id="mileage" class="form-control" name="mileage"
-                         size="11" minlength="1" maxlength="11">
+                  <input type="text" id="headline" class="form-control" name="headline"
+                         size="11" minlength="1" maxlength="255">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="summary" class="col-form-label col-md-3">
+                  Summary
+                  <span class="font-weight-bold text-danger">*</span>
+                </label>
+                <div class="col-md-9">
+                  <textarea id="summary" class="form-control" name="summary"
+                            rows="8" cols="80"></textarea>
                 </div>
               </div>
             </div>

@@ -94,7 +94,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Mohammad Hafijul Islam - Autos Database</title>
+  <title><?= $title ?> - Autos Database</title>
   <link rel="shortcut icon" href="../assets/img/icons.jpg" type="image/jpg">
   <!-- Bootstrap core CSS -->
   <link href="../assets/css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -169,7 +169,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
 
 <footer class="footer mt-auto py-3">
   <div class="container">
-    <span class="text-muted">&copy; <?= date('Y') ?> . Mohammad Hafijul Islam</span>
+    <span class="text-muted">&copy; <?= date('Y') ?> . <?= $title ?></span>
   </div>
 </footer>
 <script src="../assets/js/jquery.min.js"></script>

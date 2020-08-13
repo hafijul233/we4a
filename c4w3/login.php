@@ -1,6 +1,6 @@
 <?php require "../include/pdo.php";
 
-$salt = "it is not a pinch of salt";
+$salt = "XyZzy12*_";
 
 if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
     $error = [];
@@ -22,7 +22,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
     if (count($error) == 0) {
         $encrypt = md5($salt . $password);
 
-        $sql = "SELECT * FROM `users` WHERE `email` = :email AND `stored_hash` = :password LIMIT 1";
+        $sql = "SELECT * FROM `users` WHERE `email` = :email AND `password` = :password LIMIT 1";
         $statement = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 
         $statement->execute(array(':email' => $email, ':password' => $encrypt));
@@ -42,7 +42,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Log In') {
             error_log("Login Success. $email");
 
             //redirect to view.php page as get req
-            header("Location: view.php");
+            header("Location: index.php");
             return;
         }
     }
@@ -77,7 +77,7 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
 <main role="main" class="flex-shrink-0">
   <div class="container">
     <form class="form-signin" action="login.php" method="post" accept-charset="UTF-8" autocomplete="off"
-          spellcheck="true">
+          spellcheck="true" id="form" onsubmit="return validation();">
       <div class="text-center mb-4">
         <img class="mb-4" src="../assets/img/icons.jpg" alt="Logo" width="72" height="72">
         <h1 class="h3 mb-3 font-weight-normal">Please Log In</h1>
@@ -90,17 +90,16 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
           followed by 123. -->
         </p>
       </div>
-        <?php //print_r($_SESSION) ?>
         <?= display_error() ?>
       <div class="form-label-group">
         <input type="text" id="inputEmail" class="form-control"
-               placeholder="Email address" name="email" size="255" required autofocus>
+               placeholder="Email address" name="email" size="255" autofocus>
         <label for="inputEmail">Email address</label>
       </div>
 
       <div class="form-label-group">
         <input type="password" id="inputPassword" class="form-control"
-               placeholder="Password" name="pass" required>
+               placeholder="Password" name="pass">
         <label for="inputPassword">Password</label>
       </div>
       <div class="row">
@@ -109,7 +108,7 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
                  type="submit" name="submit" value="Log In">
         </div>
         <div class="col-6">
-          <input class="btn btn-lg btn-secondary btn-block" type="reset" name="cancel" value="Cancel">
+          <input class="btn btn-lg btn-secondary btn-block" type="submit" name="cancel" value="Cancel">
         </div>
       </div>
     </form>
@@ -122,5 +121,30 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
 </footer>
 <script src="../assets/js/jquery.min.js"></script>
 <script src="../assets/js/bootstrap.bundle.js"></script>
+<script type="text/javascript">
+    function validation() {
+//if js not enabled in machine
+        try {
+            addr = document.getElementById('inputEmail').value;
+            pw = document.getElementById('inputPassword').value;
+
+            console.log("Validating addr=" + addr + " pw=" + pw);
+
+            if (addr == null || addr == "" || pw == null || pw == "") {
+                alert("Both fields must be filled out");
+                return false;
+            } else if (addr.indexOf('@') == -1) {
+                alert("Invalid email address");
+                return false;
+            } else
+                return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+        //after alert stop page
+        return false;
+    }
+</script>
 </body>
 </html>

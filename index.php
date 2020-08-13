@@ -1,6 +1,8 @@
 <?php
 $tasks = scandir(__DIR__);
 $assignments = [];
+$links = json_decode(file_get_contents('list.json'), true);
+
 foreach ($tasks as $task) {
     if ($task == '.' || $task == '..' || $task == 'assets' || $task == 'include' || $task == '.git'
         || $task == 'database' || $task == 'resources' || is_file($task) || $task == ".idea") continue;
@@ -17,7 +19,8 @@ foreach ($tasks as $task) {
 
         array_push($assignments, [
             'title' => $temp[0] . $temp[1] . $temp[2],
-            'link' => $temp[3] . '/'
+            'link' => $temp[3] . '/',
+            'detail' => $links[$task],
         ]);
     }
 }
@@ -44,7 +47,7 @@ foreach ($tasks as $task) {
           foreach ($assignments as $assignment) : ?>
             <a class="font-weight-bold" href="<?= $assignment['link'] ?>"><?= $assignment['title'] ?></a>
             <p class="lead">
-              <a class="text-dark text-decoration-none" href="https://www.wa4e.com/assn/autosdb" target="_blank">&rightarrow;Specification
+              <a class="text-dark text-decoration-none" href="<?= $assignment['detail'] ?>" target="_blank">&rightarrow;Specification
                 for this
                 Application</a>
             </p>
@@ -52,16 +55,6 @@ foreach ($tasks as $task) {
           endforeach;
       endif;
       ?>
-    <!--    <a class="font-weight-bold" href="week-4/index.php">Week 4 Assignment</a>
-        <p class="lead">
-          <a class="text-dark" href="https://www.wa4e.com/assn/autosess" target="_blank">Specification for this
-            Application</a>
-        </p>
-        <a class="font-weight-bold" href="week-5/index.php">Week 5 Assignment</a>
-        <p class="lead">
-          <a class="text-dark" href="https://www.wa4e.com/assn/autosess" target="_blank">Specification for this
-            Application</a>
-        </p>-->
   </div>
 </main>
 
