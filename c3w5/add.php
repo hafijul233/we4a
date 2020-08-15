@@ -88,7 +88,7 @@ if (isset($_POST['insert']) && $_POST['insert'] == "Add") {
       <div class="col-12">
         <div class="card">
           <p class=" font-weight-bold card-header bg-success text-white">Insert New Mileage</p>
-          <form action="add.php" accept-charset="UTF-8" method="post" autocomplete="off"
+          <form action="add.php" accept-charset="UTF-8" method="post"
                 spellcheck="false">
             <div class="card-body">
                 <?= display_error() ?>

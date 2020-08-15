@@ -104,7 +104,7 @@ elseif (!empty($_GET['profile_id']) && !empty($_POST['insert'])) {
         <div class="card">
           <p class=" font-weight-bold card-header bg-success text-white">Edit Profile</p>
           <form action="edit.php?profile_id=<?= $_GET['profile_id'] ?>" accept-charset="UTF-8" method="post"
-                autocomplete="off"
+
                 spellcheck="false">
             <div class="card-body">
                 <?= display_error() ?>

@@ -50,7 +50,7 @@ elseif (isset($_POST['cancel']) && $_POST['cancel'] == 'Cancel') {
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-    <form class="form-signin" action="login.php" method="post" accept-charset="UTF-8" autocomplete="off"
+    <form class="form-signin" action="login.php" method="post" accept-charset="UTF-8"
           spellcheck="true">
       <div class="text-center mb-4">
         <img class="mb-4" src="../assets/img/icons.jpg" alt="Logo" width="72" height="72">

@@ -125,7 +125,7 @@ $autos = ($statement->rowCount() > 0)
       <div class="col-12">
         <div class="card">
           <p class=" font-weight-bold card-header bg-success text-white">Insert New Mileage</p>
-          <form action="autos.php?name=<?= $user ?>" accept-charset="UTF-8" method="post" autocomplete="off"
+          <form action="autos.php?name=<?= $user ?>" accept-charset="UTF-8" method="post"
                 spellcheck="false">
             <div class="card-body">
                 <?= (count($confirm) > 0) ? '<p class="text-center font-weight-bold ' . $confirm['type'] . '">' . $confirm['msg'] . '<p>' : null; ?>

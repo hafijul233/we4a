@@ -105,7 +105,7 @@ elseif (!empty($_GET['auto_id']) && !empty($_POST['insert'])) {
       <div class="col-12">
         <div class="card">
           <p class=" font-weight-bold card-header bg-info text-white">Edit Old Automobiles</p>
-          <form action="<?= "edit.php?auto_id=" . $auto_id ?>" accept-charset="UTF-8" method="post" autocomplete="off"
+          <form action="<?= "edit.php?auto_id=" . $auto_id ?>" accept-charset="UTF-8" method="post"
                 spellcheck="false">
             <div class="card-body">
                 <?= display_error() ?>

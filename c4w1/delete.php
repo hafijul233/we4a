@@ -71,7 +71,7 @@ elseif (!empty($_GET['profile_id']) && !empty($_POST['delete'])) {
       <div class="col-12">
         <div class="card">
           <p class=" font-weight-bold card-header bg-info text-white">Delete Automobiles</p>
-          <form action="<?= "delete.php?profile_id=" . $profile_id ?>" accept-charset="UTF-8" method="post" autocomplete="off"
+          <form action="<?= "delete.php?profile_id=" . $profile_id ?>" accept-charset="UTF-8" method="post"
                 spellcheck="false">
             <div class="card-body">
                 <?= display_error() ?>

@@ -61,7 +61,7 @@ if (isset($_GET['submit']) && $_GET['submit'] == 'Crack MD5') {
   <div class="text-center mb-4">
     <h1 class="h3 mb-3 font-weight-normal">MD5 Cracker</h1>
   </div>
-  <form class="form-inline" action="index.php" method="get" accept-charset="UTF-8" autocomplete="off"
+  <form class="form-inline" action="index.php" method="get" accept-charset="UTF-8"
         spellcheck="true">
       <?= display_error() ?>
     <div class="form-label-group mr-3">

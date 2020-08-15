@@ -61,7 +61,7 @@ if (isset($_POST['human'])) {
     <div class="card">
       <h5 class="card-header bg-success text-white font-weight-bold">Game Board</h5>
       <div class="card-body">
-        <form action="game.php?name=<?= $_GET['name'] ?>" method="post" accept-charset="UTF-8" autocomplete="off"
+        <form action="game.php?name=<?= $_GET['name'] ?>" method="post" accept-charset="UTF-8"
               spellcheck="false">
           <div class="form-group row mb-2">
             <label for="staticEmail2" class="col-form-label col-md-6">Choose Hand-sign</label>
